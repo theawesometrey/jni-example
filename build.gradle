@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'cpp'
+}
+
+group 'jni.example'
+version '1.0.0'
+
+sourceCompatibility = 1.8
+
+model {
+    components {
+        jni_example_Example(NativeLibrarySpec)
+    }
+    toolChains {
+        gcc(Gcc) {
+            eachPlatform {
+                cppCompiler.withArguments { args ->
+                    args << "-I/usr/include"
+                    args << "-I/usr/local/include"
+                    args << "-I/usr/local/java/jdk1.8.0_31/include"
+                    args << "-I/usr/local/java/jdk1.8.0_31/include/linux"
+                    args << "-std=c++11"
+                }
+                linker.withArguments { args ->
+                    args << "-lstdc++"
+                }
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+compileJava.dependsOn { jni_example_ExampleSharedLibrary }
