@@ -10,7 +10,7 @@ sourceCompatibility = 1.8
 
 model {
     components {
-        jni_example_Example(NativeLibrarySpec)
+        example(NativeLibrarySpec)
     }
     toolChains {
         gcc(Gcc) {
@@ -18,8 +18,8 @@ model {
                 cppCompiler.withArguments { args ->
                     args << "-I/usr/include"
                     args << "-I/usr/local/include"
-                    args << "-I/usr/local/java/jdk1.8.0_31/include"
-                    args << "-I/usr/local/java/jdk1.8.0_31/include/linux"
+                    args << "-I${org.gradle.internal.jvm.Jvm().javaHome}/include"
+                    args << "-I${org.gradle.internal.jvm.Jvm().javaHome}/include/linux"
                     args << "-std=c++11"
                 }
                 linker.withArguments { args ->
@@ -34,8 +34,13 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+test {
+    useTestNG()
+    systemProperty "java.library.path", "$buildDir/libs/example/shared"
 }
 
-compileJava.dependsOn { jni_example_ExampleSharedLibrary }
+dependencies {
+    testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
+}
+
+test.dependsOn { exampleSharedLibrary }
