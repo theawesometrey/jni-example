@@ -18,8 +18,8 @@ model {
                 cppCompiler.withArguments { args ->
                     args << "-I/usr/include"
                     args << "-I/usr/local/include"
-                    args << "-I${org.gradle.internal.jvm.Jvm().javaHome}/include"
-                    args << "-I${org.gradle.internal.jvm.Jvm().javaHome}/include/linux"
+                    args << "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+                    args << "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
                     args << "-std=c++11"
                 }
                 linker.withArguments { args ->
@@ -42,5 +42,12 @@ test {
 dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
 }
+
+task javah(type:Exec) {
+    workingDir "src/example/cpp"
+    commandLine 'javah', '-cp', file("$projectDir/src/main/java").getAbsolutePath(), 'jni.example.Example'
+}
+
+tasks.getByPath(':exampleSharedLibrary').dependsOn javah
 
 test.dependsOn { exampleSharedLibrary }
