@@ -15,6 +15,30 @@ extern "C" {
 JNIEXPORT void JNICALL Java_jni_example_Example_sq
   (JNIEnv *, jclass, jdoubleArray);
 
+/*
+ * Class:     jni_example_Example
+ * Method:    newArray
+ * Signature: (ID)[D
+ */
+JNIEXPORT jdoubleArray JNICALL Java_jni_example_Example_newArray
+  (JNIEnv *, jclass, jint, jdouble);
+
+/*
+ * Class:     jni_example_Example
+ * Method:    new2DArray
+ * Signature: (IID)[[D
+ */
+JNIEXPORT jobjectArray JNICALL Java_jni_example_Example_new2DArray
+  (JNIEnv *, jclass, jint, jint, jdouble);
+
+/*
+ * Class:     jni_example_Example
+ * Method:    copy
+ * Signature: (Ljni/example/Pair;)Ljni/example/Pair;
+ */
+JNIEXPORT jobject JNICALL Java_jni_example_Example_copy
+  (JNIEnv *, jclass, jobject);
+
 #ifdef __cplusplus
 }
 #endif

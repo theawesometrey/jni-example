@@ -10,21 +10,14 @@ sourceCompatibility = 1.8
 
 model {
     components {
-        example(NativeLibrarySpec)
-    }
-    toolChains {
-        gcc(Gcc) {
-            eachPlatform {
-                cppCompiler.withArguments { args ->
-                    args << "-I/usr/include"
-                    args << "-I/usr/local/include"
-                    args << "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-                    args << "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
-                    args << "-std=c++11"
-                }
-                linker.withArguments { args ->
-                    args << "-lstdc++"
-                }
+        example(NativeLibrarySpec) {
+            binaries.all {
+                cppCompiler.args "-I/usr/include"
+                cppCompiler.args "-I/usr/local/include"
+                cppCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+                cppCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
+                cppCompiler.args "-std=c++11"
+                linker.args "-lstdc++"
             }
         }
     }
