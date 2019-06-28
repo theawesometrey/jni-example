@@ -1,9 +1,15 @@
 package jni.example;
 
+import java.io.IOException;
+
 public class Example {
 
     static {
-        System.loadLibrary("example");
+        try {
+            NativeUtils.loadLibraryFromJar("/libexample.so");
+        } catch(IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static native void sq(double[] array);

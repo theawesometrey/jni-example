@@ -8,9 +8,20 @@ version '1.0.0'
 
 sourceCompatibility = 1.8
 
+sourceSets {
+    main {
+        resources {
+            srcDir "${buildDir}/libs/example/shared"
+        }
+    }
+}
+
 model {
     components {
         example(NativeLibrarySpec) {
+            sources.cpp { 
+                exportedHeaders.srcDir "${buildDir}/generated/include"
+            }
             binaries.all {
                 cppCompiler.args "-I/usr/include"
                 cppCompiler.args "-I/usr/local/include"
@@ -29,7 +40,6 @@ repositories {
 
 test {
     useTestNG()
-    systemProperty "java.library.path", "$buildDir/libs/example/shared"
 }
 
 dependencies {
@@ -38,13 +48,13 @@ dependencies {
 
 task javahExample(type:Exec) {
     String javaSrcDir = "${projectDir}/src/main/java"
-    String cppSrcDir = "${projectDir}/src/example/cpp"
+    String cppSrcDir = "${buildDir}/generated/include"
     inputs.file "${javaSrcDir}/jni/example/Example.java"
-    outputs.dir "$cppSrcDir"
-    workingDir "$cppSrcDir"
-    commandLine 'javah', '-cp', "$javaSrcDir", 'jni.example.Example'
+    outputs.dir cppSrcDir
+    workingDir cppSrcDir
+    commandLine 'javah', '-cp', javaSrcDir, 'jni.example.Example'
 }
 
 tasks.getByPath(':exampleSharedLibrary').dependsOn javahExample
 
-test.dependsOn { exampleSharedLibrary }
+processResources.dependsOn { exampleSharedLibrary }
