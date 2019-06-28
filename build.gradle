@@ -36,11 +36,15 @@ dependencies {
     testCompile group: 'org.testng', name: 'testng', version: '6.14.3'
 }
 
-task javah(type:Exec) {
-    workingDir "src/example/cpp"
-    commandLine 'javah', '-cp', file("$projectDir/src/main/java").getAbsolutePath(), 'jni.example.Example'
+task javahExample(type:Exec) {
+    String javaSrcDir = "${projectDir}/src/main/java"
+    String cppSrcDir = "${projectDir}/src/example/cpp"
+    inputs.file "${javaSrcDir}/jni/example/Example.java"
+    outputs.dir "$cppSrcDir"
+    workingDir "$cppSrcDir"
+    commandLine 'javah', '-cp', "$javaSrcDir", 'jni.example.Example'
 }
 
-tasks.getByPath(':exampleSharedLibrary').dependsOn javah
+tasks.getByPath(':exampleSharedLibrary').dependsOn javahExample
 
 test.dependsOn { exampleSharedLibrary }
